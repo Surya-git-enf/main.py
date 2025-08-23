@@ -7,7 +7,7 @@ app = FastAPI()
 @app.get("/")
 api_id = os.getenv(api_id)
 api_hash = os.getenv("api_hash")
-client = TelegramClient("my_session",app_id,app_hash)
+client = TelegramClient("my_session",api_id,api_hash)
         
 source_channels = []
 source_channels = os.getenv("source_channels")
