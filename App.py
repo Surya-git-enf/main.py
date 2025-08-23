@@ -5,8 +5,8 @@ import asyncio
 app = FastAPI()
 
 @app.get("/")
-app_id = os.getenv("app_id)
-app_hash = os.getenv("app_hash)
+app_id = os.getenv("app_id")
+app_hash = os.getenv("app_hash")
 client = TelegramClient("my_session",app_id,app_hash)
         
 source_channels = []
