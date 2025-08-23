@@ -1,12 +1,12 @@
-from fastapi import FastAPI, Request
 import os
 from telethon import TelegramClient
+from fastapi import FastAPI
 import asyncio
 app = FastAPI()
 
 @app.get("/")
-api_id = os.getenv(api_id)
-api_hash = os.getenv("api_hash")
+api_id = int(os.getenv("API_ID"))
+api_hash = os.getenv("API_HASH")
 client = TelegramClient("my_session",api_id,api_hash)
         
 source_channels = []
