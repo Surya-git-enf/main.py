@@ -1,36 +1,64 @@
 import os
+import asyncio
 from telethon import TelegramClient
 from fastapi import FastAPI
-import asyncio
+
+# Load Telegram credentials from environment
+api_id = int(os.getenv("API_ID"))        # must be int
+api_hash = os.getenv("API_HASH")
+
+# Create Telegram client
+client = TelegramClient("my_session", api_id, api_hash)
+
+# Source and Target Channels from env (comma-separated)
+source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
+target_channels = os.getenv("TARGET_CHANNELS", "").split(",")
+
+# Create FastAPI app
 app = FastAPI()
 
 @app.get("/")
-api_id = int(os.getenv("API_ID"))
-api_hash = os.getenv("API_HASH")
-client = TelegramClient("my_session",api_id,api_hash)
-        
-source_channels = []
-source_channels = os.getenv("source_channels")
-target_channels = []
-target_channels = os.getenv("target_channels")
+def home():
+    return {"status": "running", "message": "Telegram forwarder active!"}
 
-async def main():
-   while True:
-    for src in source_channels:
-       new_messages = await client.get_messages(src,limit=1)
-       for trc in target_channels:
-          existed_messages = await client.get_messages(trc,limit=1)
-          if new_messages and existed_messages:
-             if new_messages[0].message != existed_messages[0].message :
-                await client.forward_messages(trc,new_messages)
-                print(f"forwarded from {src}-->{trc}}")
-                else:
-                   print(f"already existed in {trc}"")
-          else:
-             print(f"no messages in {src} or {trc})
-    await asyncio.sleep(300)
-with client:
-   client.loop.run_unti_complete(main())
-   print("complete...")
-   return "surya it's completed.."
-    
+
+# Background task to forward messages
+async def forward_messages():
+    while True:
+        for src in source_channels:
+            if not src.strip():
+                continue
+
+            try:
+                new_messages = await client.get_messages(src, limit=1)
+            except Exception as e:
+                print(f"Error fetching from {src}: {e}")
+                continue
+
+            for tgt in target_channels:
+                if not tgt.strip():
+                    continue
+
+                try:
+                    existed_messages = await client.get_messages(tgt, limit=10)
+
+                    if new_messages and existed_messages:
+                        if new_messages[0].message != existed_messages[0].message:
+                            await client.forward_messages(tgt, new_messages)
+                            print(f"✅ Forwarded from {src} -> {tgt}")
+                        else:
+                            print(f"⚠️ Already existed in {tgt}!")
+                    else:
+                        print(f"ℹ️ No messages in {src} or {tgt}")
+
+                except Exception as e:
+                    print(f"Error forwarding to {tgt}: {e}")
+
+        await asyncio.sleep(300)  # check every 5 mins
+
+
+# Run client + background task with FastAPI
+@app.on_event("startup")
+async def startup_event():
+    await client.start()
+    asyncio.create_task(forward_messages())
