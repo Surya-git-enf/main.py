@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Request
-
+import os
 app = FastAPI()
 
 @app.get("/")
 def home():
-    hello = input("enter something")
+    
+    hello = os.getenv("hello")
     return hello
     
