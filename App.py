@@ -50,7 +50,7 @@ async def forward_messages():
                         else:
                             print(f"⚠️ Already existed in {tgt}!")
                     else:
-                        print(f"ℹ️ No messages in {src} or {tgt}")
+                        print(f"ℹ️ No messages in {src} or {tgt}") 
 
                 except Exception as e:
                     print(f"Error forwarding to {tgt}: {e}")
