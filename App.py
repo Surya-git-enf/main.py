@@ -27,22 +27,38 @@ def home():
 async def forward_messages():
     while True:
         for src in source_channels:
-            if not src.strip():
-                continue
-
-            try:
-                new_messages = await client.get_messages(src, limit=1)
-            except Exception as e:
-                print(f"Error fetching from {src}: {e}")
-                continue
-
+            new_messages = await client.get_messages(src, limit=1)
             for tgt in target_channels:
-                if not tgt.strip():
-                    continue
+                existed_messages = await client.get_messages(tgt, limit=10)
+                if new_messages and existed_messages:
+                        if new_messages[0].message != existed_messages[0].message:
+                            await client.forward_messages(tgt, new_messages)
+                            print(f"✅ Forwarded from {src} -> {tgt}")
+                            
+                        else:
+                            print(f"⚠️ Already existed in {tgt}!")
+                            
+                    else:
+                        print(f"ℹ️ No messages in {src} or {tgt}") 
 
-                try:
-                    existed_messages = await client.get_messages(tgt, limit=1)
+               # except Exception as e:
+                #    print(f"Error forwarding to {tgt}: {e}")
 
+        await asyncio.sleep(300)  # check every 5 mins
+
+            #try:
+                #new_messages = await client.get_messages(src, limit=1)
+            #except Exception as e:
+               # print(f"Error fetching from {src}: {e}")
+               # continue
+
+            #for tgt in target_channels:
+                #if not tgt.strip():
+                    #continue
+
+               # try:
+                #    existed_messages = await client.get_messages(tgt, limit=1)
+                    """
                     if new_messages and existed_messages:
                         if new_messages[0].message != existed_messages[0].message:
                             await client.forward_messages(tgt, new_messages)
@@ -56,7 +72,7 @@ async def forward_messages():
 
                 except Exception as e:
                     print(f"Error forwarding to {tgt}: {e}")
-
+                """
         await asyncio.sleep(300)  # check every 5 mins
 
 
