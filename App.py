@@ -58,18 +58,18 @@ async def forward_messages():
 
                # try:
                 #    existed_messages = await client.get_messages(tgt, limit=1)
-                    """
-                    if new_messages and existed_messages:
-                        if new_messages[0].message != existed_messages[0].message:
-                            await client.forward_messages(tgt, new_messages)
-                            print(f"✅ Forwarded from {src} -> {tgt}")
+                    
+                    #if new_messages and existed_messages:
+                     #   if new_messages[0].message != existed_messages[0].message:
+                      #      await client.forward_messages(tgt, new_messages)
+                       #     print(f"✅ Forwarded from {src} -> {tgt}")
                             
-                        else:
-                            print(f"⚠️ Already existed in {tgt}!")
+                        #else:
+                         #   print(f"⚠️ Already existed in {tgt}!")
                             
-                    else:
-                        print(f"ℹ️ No messages in {src} or {tgt}") 
-                   """
+                    #else:
+                   #     print(f"ℹ️ No messages in {src} or {tgt}") 
+                   
                # except Exception as e:
                 #    print(f"Error forwarding to {tgt}: {e}")
                 
