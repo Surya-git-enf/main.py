@@ -27,20 +27,20 @@ def home():
 async def forward_messages():
     while True:
         for src in source_channels:
-            #if not src.strip():
-                #continue
+            if not src.strip():
+                continue
 
-            #try:
+            try:
                 new_messages = await client.get_messages(src, limit=1)
-            #except Exception as e:
+            except Exception as e:
                 print(f"Error fetching from {src}: {e}")
                 continue
 
             for tgt in target_channels:
-               # if not tgt.strip():
-                #    continue
+                if not tgt.strip():
+                    continue
 
-                #try:
+                try:
                     existed_messages = await client.get_messages(tgt, limit=10)
 
                     if new_messages and existed_messages:
