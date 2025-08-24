@@ -33,7 +33,7 @@ async def forward_messages():
                 continue
 
             try:
-                new_messages = await client.get_messages(src, limit=1)
+                new_messages = await client.get_messages(src, limit=2)
                 if not new_messages:
                     continue
                 new_msg = new_messages[0]  # latest source message
@@ -46,7 +46,7 @@ async def forward_messages():
                     continue
 
                 try:
-                    existed_messages = await client.get_messages(tgt, limit=10)
+                    existed_messages = await client.get_messages(tgt, limit=50)
 
                     if existed_messages:
                         # Check if new_msg.text exists in any of the last 10 target messages
