@@ -2,13 +2,14 @@ import os
 import asyncio
 from telethon import TelegramClient
 from fastapi import FastAPI
+from telethon.sessions import StringSession
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
-
+session_string = os.getenv("SESSION_STRING")
 # Create Telegram client
-client = TelegramClient("my_session", api_id, api_hash)
+client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
 source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
