@@ -26,7 +26,8 @@ def home():
 
 # Background task to forward messages
 async def forward_messages():
-    while True:
+    n=0
+    while n==0:
         for src in source_channels:
             if not src.strip():
                 continue
@@ -65,7 +66,7 @@ async def forward_messages():
                 except Exception as e:
                     print(f"Error forwarding to {tgt}: {e}")
 
-        await asyncio.sleep(300)  # check every 5 mins
+        await asyncio.sleep(100)  # check every 5 mins
 
 
 # Run client + background task with FastAPI
