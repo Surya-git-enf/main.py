@@ -8,6 +8,7 @@ from telethon.sessions import StringSession
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
 session_string = os.getenv("SESSION_STRING")
+
 # Create Telegram client
 client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
@@ -27,52 +28,43 @@ def home():
 async def forward_messages():
     while True:
         for src in source_channels:
-            new_messages = await client.get_messages(src, limit=1)
+            if not src.strip():
+                continue
+
+            try:
+                new_messages = await client.get_messages(src, limit=1)
+                if not new_messages:
+                    continue
+                new_msg = new_messages[0]  # latest source message
+            except Exception as e:
+                print(f"Error fetching from {src}: {e}")
+                continue
+
             for tgt in target_channels:
-                existed_messages = await client.get_messages(tgt, limit=10)
-                if new_messages and existed_messages:
-                        if new_messages[0].message != existed_messages[0].message:
-                            await client.forward_messages(tgt, new_messages)
+                if not tgt.strip():
+                    continue
+
+                try:
+                    existed_messages = await client.get_messages(tgt, limit=10)
+
+                    if existed_messages:
+                        # Check if new_msg.text exists in any of the last 10 target messages
+                        exists = any(m.message == new_msg.message for m in existed_messages)
+
+                        if not exists:
+                            await client.forward_messages(tgt, new_msg)
                             print(f"✅ Forwarded from {src} -> {tgt}")
-                            
                         else:
-                            print(f"⚠️ Already existed in {tgt}!")
-                            
-                else:
-                        print(f"ℹ️ No messages in {src} or {tgt}") 
+                            print(f"⚠️ Message already exists in {tgt}!")
 
-               # except Exception as e:
-                #    print(f"Error forwarding to {tgt}: {e}")
+                    else:
+                        # target empty, safe to forward
+                        await client.forward_messages(tgt, new_msg)
+                        print(f"✅ Forwarded (target empty) {src} -> {tgt}")
 
-        await asyncio.sleep(300)  # check every 5 mins
+                except Exception as e:
+                    print(f"Error forwarding to {tgt}: {e}")
 
-            #try:
-                #new_messages = await client.get_messages(src, limit=1)
-            #except Exception as e:
-               # print(f"Error fetching from {src}: {e}")
-               # continue
-
-            #for tgt in target_channels:
-                #if not tgt.strip():
-                    #continue
-
-               # try:
-                #    existed_messages = await client.get_messages(tgt, limit=1)
-                    
-                    #if new_messages and existed_messages:
-                     #   if new_messages[0].message != existed_messages[0].message:
-                      #      await client.forward_messages(tgt, new_messages)
-                       #     print(f"✅ Forwarded from {src} -> {tgt}")
-                            
-                        #else:
-                         #   print(f"⚠️ Already existed in {tgt}!")
-                            
-                    #else:
-                   #     print(f"ℹ️ No messages in {src} or {tgt}") 
-                   
-               # except Exception as e:
-                #    print(f"Error forwarding to {tgt}: {e}")
-                
         await asyncio.sleep(300)  # check every 5 mins
 
 
