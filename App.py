@@ -67,7 +67,7 @@ async def forward_messages():
                     print(f"Error forwarding to {tgt}: {e}")
 
         await asyncio.sleep(100)  # check every 5 mins
-
+        n=0 
 
 # Run client + background task with FastAPI
 @app.on_event("startup")
