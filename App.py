@@ -41,7 +41,7 @@ async def forward_messages():
                     continue
 
                 try:
-                    existed_messages = await client.get_messages(tgt, limit=100)
+                    existed_messages = await client.get_messages(tgt, limit=1)
 
                     if new_messages and existed_messages:
                         if new_messages[0].message != existed_messages[0].message:
