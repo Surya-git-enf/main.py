@@ -69,10 +69,10 @@ async def forward_messages():
                             
                     else:
                         print(f"ℹ️ No messages in {src} or {tgt}") 
-
-                except Exception as e:
-                    print(f"Error forwarding to {tgt}: {e}")
-                """
+                   """
+               # except Exception as e:
+                #    print(f"Error forwarding to {tgt}: {e}")
+                
         await asyncio.sleep(300)  # check every 5 mins
 
 
