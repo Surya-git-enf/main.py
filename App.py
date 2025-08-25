@@ -80,9 +80,8 @@ async def main():
     
     data =supabase.table("telegram_sessions").select("Session_string").execute()
     sessions = data.data or []
-    tasks = 
-    [forward_message(user["Session_string"])for user in sessions]
-    asyncio.gather(*tasks)
+    tasks =  [forward_message(user["Session_string"])for user in sessions]
+    await asyncio.gather(*tasks)
     
 
 
