@@ -86,7 +86,9 @@ async def main():
 
 
 # Run client + background task with FastAPI
+"""
 @app.on_event("startup")
 async def startup_event():
     await client.start()
     asyncio.create_task(forward_messages())
+"""
