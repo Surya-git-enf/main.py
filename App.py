@@ -10,8 +10,8 @@ api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
 #session_string = os.getenv("SESSION_STRING")
 # CREATE A SUPABASE CLIENT
-SUPABASE_URL =                 #OUR SUPABASE PROJECT URL
-SUPABASE_SECRRET_KEY =        #YOUR SUPABASE SECRET ROLE KEY
+SUPABASE_URL =    "https://nepbpzskrtjrityzenig.supabase.co"             #OUR SUPABASE PROJECT URL
+SUPABASE_SECRRET_KEY =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lcGJwenNrcnRqcml0eXplbmlnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTUxMDMxOSwiZXhwIjoyMDcxMDg2MzE5fQ.l5lwIsyiiShRT2UPHu4xvc6mRxIhJvNgVM6zpiJhfO0"      #YOUR SUPABASE SECRET ROLE KEY
 supabase:Client = 
 create_client(SUPABASE_URL,SUPABASE_SECRET_KEY) # create client for supabase
 session_string = supabase.table("telegram_sessions").select("Session_string").execute()
