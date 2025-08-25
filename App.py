@@ -89,5 +89,5 @@ async def main():
 
 @app.on_event("startup")
 async def startup_event():
-    await client.start()
+   # await client.start()
     asyncio.create_task(main())
