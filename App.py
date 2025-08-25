@@ -3,13 +3,20 @@ import asyncio
 from telethon import TelegramClient
 from fastapi import FastAPI
 from telethon.sessions import StringSession
+from supabase import create_client,Client
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
-session_string = os.getenv("SESSION_STRING")
-
+#session_string = os.getenv("SESSION_STRING")
+# CREATE A SUPABASE CLIENT
+SUPABASE_URL =                 #OUR SUPABASE PROJECT URL
+SUPABASE_SECRRET_KEY =        #YOUR SUPABASE SECRET ROLE KEY
+supabase:Client = 
+create_client(SUPABASE_URL,SUPABASE_SECRET_KEY) # create client for supabase
+session_string = supabase.table("telegram_sessions").select("Session_string").execute()
 # Create Telegram client
+
 client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
@@ -21,13 +28,13 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"status": "running", "message": "Telegram forwarder active!"}
+    return {"status": "running", "message": "Telegram forwarder active!","session":Session_string}
 
 
 # Background task to forward messages
 async def forward_messages():
-    n=0
-    while n==0:
+    
+    while True:
         for src in source_channels:
             if not src.strip():
                 continue
