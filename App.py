@@ -3,20 +3,14 @@ import asyncio
 from telethon import TelegramClient
 from fastapi import FastAPI
 from telethon.sessions import StringSession
-from supabase import create_client,Client
+
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
-#session_string = os.getenv("SESSION_STRING")
-# CREATE A SUPABASE CLIENT
-SUPABASE_URL =    "https://nepbpzskrtjrityzenig.supabase.co"             #OUR SUPABASE PROJECT URL
-SUPABASE_SECRRET_KEY =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lcGJwenNrcnRqcml0eXplbmlnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTUxMDMxOSwiZXhwIjoyMDcxMDg2MzE5fQ.l5lwIsyiiShRT2UPHu4xvc6mRxIhJvNgVM6zpiJhfO0"      #YOUR SUPABASE SECRET ROLE KEY
-supabase: Client = create_client(SUPABASE_URL,SUPABASE_SECRRET_KEY)  # create client for supabase
-#session_string = supabase.table("telegram_sessions").select("Session_string").execute()
-# Create Telegram client
+session_string = os.getenv("SESSION_STRING")
 
-#client = TelegramClient(StringSession(session_string), api_id, api_hash)
+client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
 source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
@@ -31,10 +25,10 @@ def home():
 
 
 # Background task to forward messages
-async def forward_messages(session_string):
+async def forward_messages():
     
     while True:
-        client = TelegramClient(StringSession(session_string), api_id, api_hash)
+        
 
         for src in source_channels:
             if not src.strip():
@@ -76,18 +70,12 @@ async def forward_messages(session_string):
 
         await asyncio.sleep(100)  # check every 5 mins
         
-async def main():
-    
-    data =supabase.table("telegram_sessions").select("Session_string").execute()
-    sessions = data.data or []
-    tasks =  [forward_message(user["Session_string"])for user in sessions]
-    await asyncio.gather(*tasks)
-    
+
 
 
 # Run client + background task with FastAPI
 
 @app.on_event("startup")
 async def startup_event():
-   # await client.start()
+    await client.start()
     asyncio.create_task(main())
