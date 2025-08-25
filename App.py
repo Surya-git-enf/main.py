@@ -14,10 +14,10 @@ SUPABASE_URL =    "https://nepbpzskrtjrityzenig.supabase.co"             #OUR SU
 SUPABASE_SECRRET_KEY =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lcGJwenNrcnRqcml0eXplbmlnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTUxMDMxOSwiZXhwIjoyMDcxMDg2MzE5fQ.l5lwIsyiiShRT2UPHu4xvc6mRxIhJvNgVM6zpiJhfO0"      #YOUR SUPABASE SECRET ROLE KEY
 supabase:Client = 
 create_client(SUPABASE_URL,SUPABASE_SECRET_KEY) # create client for supabase
-session_string = supabase.table("telegram_sessions").select("Session_string").execute()
+#sessions = supabase.table("telegram_sessions").select("Session_string").execute()
 # Create Telegram client
 
-client = TelegramClient(StringSession(session_string), api_id, api_hash)
+#client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
 source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
@@ -32,9 +32,11 @@ def home():
 
 
 # Background task to forward messages
-async def forward_messages():
+async def forward_messages(session_string):
     
     while True:
+        client = TelegramClient(StringSession(session_string), api_id, api_hash)
+
         for src in source_channels:
             if not src.strip():
                 continue
@@ -74,7 +76,16 @@ async def forward_messages():
                     print(f"Error forwarding to {tgt}: {e}")
 
         await asyncio.sleep(100)  # check every 5 mins
-        n=0 
+        
+async def main():
+    
+    data =supabase.table("telegram_sessions").select("Session_string").execute()
+    sessions = data.data or []
+    tasks = 
+    [forward_message(user["Session_string"])for user in sessions]
+    asyncio.gather(*tasks)
+    
+
 
 # Run client + background task with FastAPI
 @app.on_event("startup")
