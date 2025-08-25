@@ -16,7 +16,7 @@ supabase: Client = create_client(SUPABASE_URL,SUPABASE_SECRRET_KEY)  # create cl
 #sessions = supabase.table("telegram_sessions").select("Session_string").execute()
 # Create Telegram client
 
-#client = TelegramClient(StringSession(session_string), api_id, api_hash)
+client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
 source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
@@ -86,9 +86,8 @@ async def main():
 
 
 # Run client + background task with FastAPI
-"""
+
 @app.on_event("startup")
 async def startup_event():
     await client.start()
     asyncio.create_task(forward_messages())
-"""
