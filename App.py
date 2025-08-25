@@ -21,7 +21,7 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"status": "running", "message": "Telegram forwarder active!","session":Session_string}
+    return {"status": "running", "message": "Telegram forwarder active!"}
 
 
 # Background task to forward messages
