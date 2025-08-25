@@ -78,4 +78,4 @@ async def forward_messages():
 @app.on_event("startup")
 async def startup_event():
     await client.start()
-    asyncio.create_task(main())
+    asyncio.create_task(forward_messages())
