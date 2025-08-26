@@ -17,8 +17,10 @@ supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 #client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
-source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
-target_channels = os.getenv("TARGET_CHANNELS", "").split(",")
+source = supabase.table("telegram_sessions").select("source_channels").execute()
+target = supabase.table("telegram_sessions").select("target_channels").execute()
+source_channels = source.split(",")
+target_channels = target.split(",")
 
 # Create FastAPI app
 app = FastAPI()
