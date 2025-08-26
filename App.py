@@ -17,8 +17,8 @@ supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 #client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
-source = supabase.table("telegram_sessions").select("source_channels").execute()
-target = supabase.table("telegram_sessions").select("target_channels").execute()
+source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
 sou = source.data[0]["source_channels"]
 tar = target.data[0]["target_channels"]
 source_channels = sou.split(",")
