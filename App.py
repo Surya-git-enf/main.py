@@ -79,6 +79,7 @@ async def forward_messages(session_string):
                     print(f"Error forwarding to {tgt}: {e}")
 
         await asyncio.sleep(100)  # check every 5 mins
+        main()
         
 async def main():
     while True:
@@ -93,7 +94,7 @@ async def main():
 
 @app.on_event("startup")
 async def startup_event():
-    await client.start()
+    #await client.start()
     asyncio.create_task(main())
 
 
