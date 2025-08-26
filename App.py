@@ -79,7 +79,7 @@ async def main():
     while True:
         data = supabase.table("telegram_sessions").select("Session_string").execute()
         sessions = data.data or []
-        task = [forward_messages(user["String_session"]for user in sessions]
+        task = [forward_messages(user["String_session"]for user in sessions)]
         await asyncio.gather(*task)
 
 
