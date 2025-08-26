@@ -3,14 +3,18 @@ import asyncio
 from telethon import TelegramClient
 from fastapi import FastAPI
 from telethon.sessions import StringSession
+from supabase import create_client,Client
 
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
-session_string = os.getenv("SESSION_STRING")
+#session_string = os.getenv("SESSION_STRING")
+SUPBASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(SUPABASE_URL,SUPABAS_KEY)
 
-client = TelegramClient(StringSession(session_string), api_id, api_hash)
+#client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
 source_channels = os.getenv("SOURCE_CHANNELS", "").split(",")
@@ -25,8 +29,9 @@ def home():
 
 
 # Background task to forward messages
-async def forward_messages():
-    
+async def forward_messages(session_string):
+    client = TelegramClient(StringSession(session_string), api_id, api_hash)
+
     while True:
         
 
@@ -70,12 +75,19 @@ async def forward_messages():
 
         await asyncio.sleep(100)  # check every 5 mins
         
-
+async def main():
+    while True:
+        data = supabase.table("telegram_sessions").select("Session_string").execute()
+        sessions = data.data or []
+        task = [forward_messages(user["String_session"]for user in sessions]
+        await asyncio.gather(*task)
 
 
 # Run client + background task with FastAPI
 
 @app.on_event("startup")
 async def startup_event():
-    await client.start()
-    asyncio.create_task(forward_messages())
+    #await client.start()
+    asyncio.create_task(main())
+
+
