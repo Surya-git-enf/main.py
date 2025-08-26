@@ -12,7 +12,7 @@ api_hash = os.getenv("API_HASH")
 #session_string = os.getenv("SESSION_STRING")
 SUPBASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL,SUPABAS_KEY)
+supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 
 #client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
