@@ -39,7 +39,7 @@ async def forward_messages(session_string):
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
  
-    #while True:
+    while True:
         
 
         for src in source_channels:
