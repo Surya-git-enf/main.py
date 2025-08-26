@@ -17,12 +17,6 @@ supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 #client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
 # Source and Target Channels from env (comma-separated)
-source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-sou = source.data[0]["source_channels"]
-tar = target.data[0]["target_channels"]
-source_channels = sou.split(",")
-target_channels = tar.split(",")
 
 # Create FastAPI app
 app = FastAPI()
@@ -34,10 +28,18 @@ def home():
 
 # Background task to forward messages
 async def forward_messages(session_string):
+    
+    source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+    target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+    sou = source.data[0]["source_channels"]
+    tar = target.data[0]["target_channels"]
+    source_channels = sou.split(",")
+    target_channels = tar.split(",")
+
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
  
-    while True:
+    #while True:
         
 
         for src in source_channels:
@@ -78,8 +80,8 @@ async def forward_messages(session_string):
                 except Exception as e:
                     print(f"Error forwarding to {tgt}: {e}")
 
-        await asyncio.sleep(100)  # check every 5 mins
-        main()
+        await asyncio.sleep(60)  # check every 5 mins
+        
         
 async def main():
     while True:
