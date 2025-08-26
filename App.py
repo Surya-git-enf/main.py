@@ -31,7 +31,8 @@ def home():
 # Background task to forward messages
 async def forward_messages(session_string):
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
-
+    await client.start()
+ 
     while True:
         
 
@@ -79,8 +80,9 @@ async def main():
     while True:
         data = supabase.table("telegram_sessions").select("Session_string").execute()
         sessions = data.data or []
-        task = [forward_messages(user["String_session"]for user in sessions)]
-        await asyncio.gather(*task)
+        tasks = [forward_messages(user["Session_string"]) for user in sessions]
+        await asyncio.gather(*tasks)
+
 
 
 # Run client + background task with FastAPI
