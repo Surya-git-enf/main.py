@@ -10,7 +10,7 @@ from supabase import create_client,Client
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
 #session_string = os.getenv("SESSION_STRING")
-SUPBASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 
