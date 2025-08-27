@@ -23,8 +23,8 @@ app = FastAPI()
 
 source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
 target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-sou = source.data[1]["source_channels"] # data in source channels
-tar = target.data[1]["target_channels"] # data in target channels
+sou = source.data[0]["source_channels"] # data in source channels
+tar = target.data[0]["target_channels"] # data in target channels
 @app.get("/")
 def home():
     return {"status": "running", "message": "Telegram forwarder active!"}
@@ -36,9 +36,9 @@ async def forward_messages(session_string):
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
     
-    while True:
+    #while True:
         
-    #for i in sou[0:len(sou)]:
+    for i in sou[0:len(sou)]:
         
         #source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
         #target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
