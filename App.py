@@ -95,8 +95,8 @@ class channels(BaseModel):
         
 @app.put("/add_channel")
 async def add_channel(add:channels):
-    user = supabase.table("telegrm_sessions").select("user_id").execute()
-    user = user.data[0]["user_id"]                                                 
+    #user = supabase.table("telegrm_sessions").select("user_id").execute()
+    #user_id = user.data[0]["user_id"]                                                 
     source_response = supabase.table("telegram_sessions").select("source_channels").excute()
     target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
     source = source_response.data[0]["source_channels"] or []
@@ -104,8 +104,8 @@ async def add_channel(add:channels):
     source.append(add.source)
     target.append(add.target)
     try:
-        source_result = supabase.table("telegram_sessions").update({"source_channels":source}).eq("user_id",user).execute()
-        target_result = supabase.table("telegram_sessions").update({"target_channels":target}).eq("user_id",user).execute()
+        source_result = supabase.table("telegram_sessions").update({"source_channels":source}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
+        target_result = supabase.table("telegram_sessions").update({"target_channels":target}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
         return {"mssage":"updated successfully"}
     except Exception as e:
         return {"error",e}
