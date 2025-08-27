@@ -24,8 +24,8 @@ source = supabase.table("telegram_sessions").select("source_channels").execute()
 target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
 sou = source.data[0]["source_channels"] # data in source channels
 tar = target.data[0]["target_channels"] # data in target channels
-source_channels = sou.split(",") # to split for array
-target_channels = tar.split(",") # to split with , for array
+source_channels = sou[0].split(",") # to split for array
+target_channels = tar[0].split(",") # to split with , for array
 
 
 @app.get("/")
