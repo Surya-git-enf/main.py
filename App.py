@@ -20,6 +20,13 @@ supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 
 # Create FastAPI app
 app = FastAPI()
+source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+sou = source.data[0]["source_channels"] # data in source channels
+tar = target.data[0]["target_channels"] # data in target channels
+source_channels = sou.split(",") # to split for array
+target_channels = tar.split(",") # to split with , for array
+
 
 @app.get("/")
 def home():
@@ -29,12 +36,12 @@ def home():
 # Background task to forward messages
 async def forward_messages(session_string):
     
-    source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-    target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-    sou = source.data[0]["source_channels"] # data in source channels
-    tar = target.data[0]["target_channels"] # data in target channels
-    source_channels = sou.split(",") # to split for array
-    target_channels = tar.split(",") # to split with , for array
+    #source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+    #target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+    #sou = source.data[0]["source_channels"] # data in source channels
+    #tar = target.data[0]["target_channels"] # data in target channels
+    #source_channels = sou.split(",") # to split for array
+    #target_channels = tar.split(",") # to split with , for array
 
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
@@ -89,7 +96,7 @@ async def main():
         sessions = data.data or []
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
-"""        
+
 class channels(BaseModel):
     source:str
     target:str
@@ -111,7 +118,7 @@ async def add_channel(add:channels):
     except Exception as e:
         return {"error":str(e)}
     
-"""
+
 
 # Run client + background task with FastAPI
 
