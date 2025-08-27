@@ -25,8 +25,8 @@ source = supabase.table("telegram_sessions").select("source_channels").execute()
 target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
 sou = source.data[0]["source_channels"] # data in source channels
 tar = target.data[0]["target_channels"] # data in target channels
-source_channels = sou[0].split(",") # to split for array
-target_channels = tar[0].split(",") # to split with , for array
+#source_channels = sou[0].split(",") # to split for array
+#target_channels = tar[0].split(",") # to split with , for array
 
 @app.get("/")
 def home():
@@ -41,26 +41,17 @@ async def forward_messages(session_string):
     
     
         
-    for i in sou[0:len(sou)]:
-        
-        source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-        target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-        sou = source.data[0]["source_channels"] # data in source channels
-        tar = target.data[0]["target_channels"] # data in target channels
-        source_channels = sou[i].split(",") # to split for array
-        target_channels = tar[i].split(",") # to split with , for array
-    
+    for i in range(len(sou)):
         
         #source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
         #target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
         #sou = source.data[0]["source_channels"] # data in source channels
         #tar = target.data[0]["target_channels"] # data in target channels
-        #source_channels = sou[n].split(",") # to split for array
-        #target_channels = tar[n].split(",") # to split with , for array
-                
-                
-    
-            
+        source_channels = sou[i].split(",") # to split for array
+        target_channels = tar[i].split(",") # to split with , for array
+        return{"source":source_channels,"target":target_channels}
+        
+        
             
         for src in source_channels:
             if not src.strip():
@@ -99,7 +90,7 @@ async def forward_messages(session_string):
 
                 except Exception as e:
                     print(f"Error forwarding to {tgt}: {e}")
-
+        
         await asyncio.sleep(60)  # check every 5 mins
         
         
