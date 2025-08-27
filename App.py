@@ -25,8 +25,8 @@ source = supabase.table("telegram_sessions").select("source_channels").execute()
 target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
 sou = source.data[0]["source_channels"] # data in source channels
 tar = target.data[0]["target_channels"] # data in target channels
-source_channels = sou.split(",") # to split for array
-target_channels = tar.split(",") # to split with , for array
+source_channels = sou[0].split(",") # to split for array
+target_channels = tar[0].split(",") # to split with , for array
 
 @app.get("/")
 def home():
@@ -120,13 +120,13 @@ async def add_channel(add:channels):
     #user_id = user.data[0]["user_id"]                                                 
     source_response = supabase.table("telegram_sessions").select("source_channels").execute()
     target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
-    source = source_response.data[0]["source_channels"] or []
-    target = target_resource.data[0]["target_channels"] or []
-    source.append(add.source)
-    target.append(add.target)
+    sources = source_response.data[0]["source_channels"] or []
+    targets = target_resource.data[0]["target_channels"] or []
+    sources.append(add.source)
+    targets.append(add.target)
     try:
-        source_result = supabase.table("telegram_sessions").update({"source_channels":source}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
-        target_result = supabase.table("telegram_sessions").update({"target_channels":target}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
+        source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
+        target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
         return {"message":"updated successfully"}
     except Exception as e:
         return {"error":str(e)}
