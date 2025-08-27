@@ -4,7 +4,7 @@ from telethon import TelegramClient
 from fastapi import FastAPI
 from telethon.sessions import StringSession
 from supabase import create_client,Client
-
+from pydantic import BaseModel
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
@@ -31,10 +31,10 @@ async def forward_messages(session_string):
     
     source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
     target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-    sou = source.data[0]["source_channels"]
-    tar = target.data[0]["target_channels"]
-    source_channels = sou.split(",")
-    target_channels = tar.split(",")
+    sou = source.data[0]["source_channels"] # data in source channels
+    tar = target.data[0]["target_channels"] # data in target channels
+    source_channels = sou.split(",") # to split for array
+    target_channels = tar.split(",") # to split with , for array
 
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
@@ -89,7 +89,27 @@ async def main():
         sessions = data.data or []
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
-
+class channels(BaseModel):
+    source:str
+    target:str
+        
+@app.put("/add_channel")
+async def add_channel(add:channel):
+    user = supabase.table("telegrm_sessions").select("user_id).execute()
+    user = user.data[0]["user_id"]                                                 
+    source_response = supabase.table("telegram_sessions").select("source_channels").excute()
+    target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
+    source = source_response.data[0]["source_channels"] or []
+    target = target_channels.data[0]["target_channels"] or []
+    source.append(add.source)
+    target.append(add.target)
+    try:
+        source_result = supabase.table("telegram_sessions").update({"source_channels":source}).eq("user_id",user).execute()
+        target_result = supabase.table("telegram_sessions").update({"target_channels":target}).eq("user_id",user).execute()
+        return {"mssage":"updated successfully"}
+    except Exception as e:
+        return {"error":str{e}}
+    
 
 
 # Run client + background task with FastAPI
