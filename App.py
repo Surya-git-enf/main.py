@@ -89,6 +89,7 @@ async def main():
         sessions = data.data or []
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
+"""        
 class channels(BaseModel):
     source:str
     target:str
@@ -110,7 +111,7 @@ async def add_channel(add:channels):
     except Exception as e:
         return {"error":str(e)}
     
-
+"""
 
 # Run client + background task with FastAPI
 
