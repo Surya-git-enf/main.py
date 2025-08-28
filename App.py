@@ -99,7 +99,7 @@ class channels(BaseModel):
         
 @app.put("/add_channel")
 async def add_channel(add:channels):
-    user = supabase.table("telegrm_sessions").select("user_id").execute()
+    user = supabase.table("telegram_sessions").select("user_id").execute()
     user_id = user.data[0]["user_id"]                                                 
     source_response = supabase.table("telegram_sessions").select("source_channels").execute()
     target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
