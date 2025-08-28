@@ -45,7 +45,7 @@ async def forward_messages(session_string):
             for s, t in zip(sou, tar):
                     source_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in s.split(",") if ch.strip()]
                     target_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in t.split(",") if ch.strip()]
-    
+                 
                     for src in source_channels:
                         if not src.strip():
                             continue
@@ -84,7 +84,7 @@ async def forward_messages(session_string):
                             except Exception as e:
                                 print(f"Error forwarding to {tgt}: {e}")
         
-                await asyncio.sleep(60)  # check every 5 mins
+            await asyncio.sleep(60)  # check every 5 mins
         
         
 async def main():
