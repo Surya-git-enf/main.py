@@ -37,6 +37,7 @@ async def forward_messages(session_string):
 
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
+    #while True:    
     source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
     target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
     sou = source.data[0]["source_channels"] or [] # data in source channels
@@ -83,7 +84,7 @@ async def forward_messages(session_string):
                     except Exception as e:
                         print(f"Error forwarding to {tgt}: {e}")
         
-            await asyncio.sleep(60)  # check every 5 mins
+await asyncio.sleep(60)  # check every 5 mins
         
         
 async def main():
@@ -92,6 +93,7 @@ async def main():
         sessions = data.data or []
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
+        await asyncio.sleep(200)
 
 class channels(BaseModel):
     user_id:str
