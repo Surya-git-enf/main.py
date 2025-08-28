@@ -137,7 +137,7 @@ async def edit_channel(edit:edit_ch,index:int):
                 return{"error":str(e)}
                 
                 
-@app.del("/del_channel")
+@app.delete("/del_channel")
 async def del_channel(del:int):
         user = supabase.table("telegram_sessions").select("user_id").execute()
         user_id = user.data[0]["user_id"]                                                 
