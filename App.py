@@ -143,8 +143,8 @@ async def delete_channel(id:int,user_id:str):
         target_resource = supabase.table("telegram_sessions").select("target_channels").eq("user_id",user_id).execute()
         sources = source_response.data[0]["source_channels"] or []
         targets = target_resource.data[0]["target_channels"] or []
-        sources.pop(sources[id])
-        targets.pop(targets[id])
+        sources.remove(sources[id])
+        targets.remove(targets[id])
         try:
                del_source = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() # delete channel from source_channels 
                del_target = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() # delete channel from target also 
