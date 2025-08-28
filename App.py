@@ -115,6 +115,29 @@ async def add_channel(add:channels):
         return {"error":str(e)}
     
 
+class edit_ch(BaseModel):
+        
+        source_value:Union[int,str]
+        target_value=Union[int,str]
+@app.put("/edit_channel")
+async def edit_channel(edit:edit_ch,index:int):
+        user = supabase.table("telegram_sessions").select("user_id").execute()
+        user_id = user.data[0]["user_id"]                                                 
+        source_response = supabase.table("telegram_sessions").select("source_channels").execute()
+        target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
+        sources = source_response.data[0]["source_channels"] or []
+        targets = target_resource.data[0]["target_channels"] or []
+        sources[index] = edit.source_value
+        targets[index] = edit.target_value
+        try:
+            edit_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() #when source edit value is stored in edit_resulr
+            edit_results = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() #this is for target edits
+            return{"message":"edited successfully"}
+        except Exception as e:
+                return{"error":str(e)}
+                
+                
+
 
 # Run client + background task with FastAPI
 
