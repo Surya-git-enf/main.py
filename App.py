@@ -138,16 +138,16 @@ async def edit_channel(edit:edit_ch,index:int):
                 
 
                 
-@app.delete("/del_channel/{del}")
-async def delete_channel(del:int):
+@app.delete("/del_channel")
+async def delete_channel(id:int):
         user = supabase.table("telegram_sessions").select("user_id").execute()
         user_id = user.data[0]["user_id"]                                                 
         source_response = supabase.table("telegram_sessions").select("source_channels").execute()
         target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
         sources = source_response.data[0]["source_channels"] or []
         targets = target_resource.data[0]["target_channels"] or []
-        sources.remove(sources[del])
-        targets.remove(targets[del])
+        sources.remove(sources[id])
+        targets.remove(targets[id])
        try:
                del_source = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() # delete channel from source_channels 
                del_target = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() # delete channel from target also 
