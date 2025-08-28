@@ -137,8 +137,8 @@ async def edit_channel(edit:edit_ch,index:int):
                 return{"error":str(e)}
                 
                 
-@app.delete("/del_channel")
-async def del_channel(del:int):
+@app.delete("/del_channel/{del}")
+async def del_channel(del : int):
         user = supabase.table("telegram_sessions").select("user_id").execute()
         user_id = user.data[0]["user_id"]                                                 
         source_response = supabase.table("telegram_sessions").select("source_channels").execute()
@@ -150,7 +150,7 @@ async def del_channel(del:int):
        try:
                del_source = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() # delete channel from source_channels 
                del_target = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() # delete channel from target also 
-        except Exception as e:
+       except Exception as e:
                 
                 retuen{"error":str(e)}
 
