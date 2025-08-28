@@ -93,7 +93,7 @@ async def main():
         sessions = data.data or []
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
-        await asyncio.sleep(200)
+        await asyncio.sleep(60)
 
 class channels(BaseModel):
     user_id:str
