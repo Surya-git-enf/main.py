@@ -118,7 +118,7 @@ async def add_channel(add:channels):
 class edit_ch(BaseModel):
         
         source_value:Union[int,str]
-        target_value=Union[int,str]
+        target_value:Union[int,str]
 @app.put("/edit_channel")
 async def edit_channel(edit:edit_ch,index:int):
         user = supabase.table("telegram_sessions").select("user_id").execute()
