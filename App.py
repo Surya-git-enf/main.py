@@ -37,9 +37,9 @@ async def forward_messages(session_string):
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
     source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-        target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-        sou = source.data[0]["source_channels"] or [] # data in source channels
-        tar = target.data[0]["target_channels"] or []  # data in target channels    
+    target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+    sou = source.data[0]["source_channels"] or [] # data in source channels
+    tar = target.data[0]["target_channels"] or []  # data in target channels    
     for s, t in zip(sou, tar):
             source_channels = [int(ch) if ch.strip("-") else ch.strip() for ch in s.split(",") if ch.strip()]
             target_channels = [int(ch) if ch.strip("-") else ch.strip() for ch in t.split(",") if ch.strip()]
