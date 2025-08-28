@@ -21,10 +21,7 @@ supabase: Client = create_client(SUPABASE_URL,SUPABASE_KEY)
 # Create FastAPI app
 app = FastAPI()
 
-source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-sou = source.data[0]["source_channels"] or [] # data in source channels
-tar = target.data[0]["target_channels"] or []  # data in target channels
+
 #source_channels = [ch.strip() for s in sou for ch in s.split(",")]
 #target_channels = [ch.strip() for t in tar for ch in t.split(",")]
         
@@ -39,9 +36,13 @@ async def forward_messages(session_string):
 
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
+    source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+        target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+        sou = source.data[0]["source_channels"] or [] # data in source channels
+        tar = target.data[0]["target_channels"] or []  # data in target channels    
     for s, t in zip(sou, tar):
-            source_channels = [ch.strip() for ch in s.split(",") if ch.strip()]
-            target_channels = [ch.strip() for ch in t.split(",") if ch.strip()]
+            source_channels = [int(ch) if ch.strip("-") else ch.strip() for ch in s.split(",") if ch.strip()]
+            target_channels = [int(ch) if ch.strip("-") else ch.strip() for ch in t.split(",") if ch.strip()]
     
             for src in source_channels:
                 if not src.strip():
@@ -97,8 +98,8 @@ class channels(BaseModel):
         
 @app.put("/add_channel")
 async def add_channel(add:channels):
-    #user = supabase.table("telegrm_sessions").select("user_id").execute()
-    #user_id = user.data[0]["user_id"]                                                 
+    user = supabase.table("telegrm_sessions").select("user_id").execute()
+    user_id = user.data[0]["user_id"]                                                 
     source_response = supabase.table("telegram_sessions").select("source_channels").execute()
     target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
     sources = source_response.data[0]["source_channels"] or []
@@ -106,8 +107,8 @@ async def add_channel(add:channels):
     sources.append(add.source)
     targets.append(add.target)
     try:
-        source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
-        target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id","ac30c72b-0280-4fbe-b78d-a52d13e6f41e").execute()
+        source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute()
+        target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute()
         return {"message":"updated successfully"}
     except Exception as e:
         return {"error":str(e)}
