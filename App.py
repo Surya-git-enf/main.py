@@ -107,8 +107,8 @@ async def add_channel(add:channels):
     source_ch = add.source
     target_ch = add.target
     if source_ch and target_ch.strip("-"):
-            sources.append(int(source_ch)
-            targets.append(int(target_ch)               
+            sources.append(int(source_ch))
+            targets.append(int(target_ch) )              
     else:    
             sources.append(add.source)
             targets.append(add.target)
