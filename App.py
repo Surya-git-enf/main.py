@@ -93,45 +93,44 @@ async def main():
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
 
-class channels(BaseModel):    
+class channels(BaseModel):
+    user_id:str
     source: Union[int,str]
     target: Union[int,str]
         
 @app.put("/add_channel")
 async def add_channel(add:channels):
-    user = supabase.table("telegram_sessions").select("user_id").execute()
-    user_id = user.data[0]["user_id"]                                                 
-    source_response = supabase.table("telegram_sessions").select("source_channels").execute()
-    target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
+    #user = supabase.table("telegram_sessions").select("user_id").eq(execute()
+    #user_id = user.data[0]["user_id"]                                                 
+    source_response = supabase.table("telegram_sessions").select("source_channels").eq("user_id",add.user_id).execute()
+    target_resource = supabase.table("telegram_sessions").select("target_channels").eq("user_id",add.user_id).execute()
     sources = source_response.data[0]["source_channels"] or []
     targets = target_resource.data[0]["target_channels"] or []    
     sources.append(str(add.source))
     targets.append(str(add.target))
     try:
-        source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute()
-        target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute()
+        source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",add.user_id).execute()
+        target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",add.user_id).execute()
         return {"message":"updated successfully"}
     except Exception as e:
         return {"error":str(e)}
     
 
 class edit_ch(BaseModel):
-        #index:int
+        user_id:str
         source_value:Union[int,str]
         target_value:Union[int,str]
 @app.put("/edit_channel")
-async def edit_channel(edit:edit_ch,index:int):
-        user = supabase.table("telegram_sessions").select("user_id").execute()
-        user_id = user.data[0]["user_id"]                                                 
-        source_response = supabase.table("telegram_sessions").select("source_channels").execute()
-        target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
+async def edit_channel(edit:edit_ch,index:int):                                            
+        source_response = supabase.table("telegram_sessions").select("source_channels").eq("user_id",edit.user_id).execute()
+        target_resource = supabase.table("telegram_sessions").select("target_channels").eq("user_id",edit.user_id).execute()
         sources = source_response.data[0]["source_channels"] or []
         targets = target_resource.data[0]["target_channels"] or []
         sources[index] = edit.source_value
         targets[index] = edit.target_value
         try:
-            edit_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() #when source edit value is stored in edit_resulr
-            edit_results = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() #this is for target edits
+            edit_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",edit.user_id).execute() #when source edit value is stored in edit_resulr
+            edit_results = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",edit.user_id).execute() #this is for target edits
             return{"message":"edited successfully"}
         except Exception as e:
                 return{"error":str(e)}
@@ -139,15 +138,13 @@ async def edit_channel(edit:edit_ch,index:int):
 
                 
 @app.delete("/del_channel")
-async def delete_channel(id:int):
-        user = supabase.table("telegram_sessions").select("user_id").execute()
-        user_id = user.data[0]["user_id"]                                                 
-        source_response = supabase.table("telegram_sessions").select("source_channels").execute()
-        target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
+async def delete_channel(id:int,user_id:str):                                             
+        source_response = supabase.table("telegram_sessions").select("source_channels").eq("user_id",user_id).execute()
+        target_resource = supabase.table("telegram_sessions").select("target_channels").eq("user_id",user_id).execute()
         sources = source_response.data[0]["source_channels"] or []
         targets = target_resource.data[0]["target_channels"] or []
-        sources.remove(sources[id])
-        targets.remove(targets[id])
+        sources.pop(sources[id])
+        targets.pop(targets[id])
         try:
                del_source = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() # delete channel from source_channels 
                del_target = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() # delete channel from target also 
