@@ -93,8 +93,8 @@ async def main():
         await asyncio.gather(*tasks)
 
 class channels(BaseModel):    
-    source:str
-    target:str
+    source:int
+    target:int
         
 @app.put("/add_channel")
 async def add_channel(add:channels):
@@ -103,15 +103,9 @@ async def add_channel(add:channels):
     source_response = supabase.table("telegram_sessions").select("source_channels").execute()
     target_resource = supabase.table("telegram_sessions").select("target_channels").execute()
     sources = source_response.data[0]["source_channels"] or []
-    targets = target_resource.data[0]["target_channels"] or []
-    source_ch = add.source
-    target_ch = add.target
-    if source_ch and target_ch.strip("-"):
-            sources.append(int(source_ch))
-            targets.append(int(target_ch) )              
-    else:    
-            sources.append(add.source)
-            targets.append(add.target)
+    targets = target_resource.data[0]["target_channels"] or []    
+    sources.append(add.source)
+    targets.append(add.target)
     try:
         source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute()
         target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute()
