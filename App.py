@@ -151,6 +151,7 @@ async def delete_channel(id:int):
         try:
                del_source = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",user_id).execute() # delete channel from source_channels 
                del_target = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() # delete channel from target also 
+                return ("deleted successfully:"del_source)
         except Exception as e:
                 
                 return {"error":str(e)}
