@@ -153,7 +153,7 @@ async def delete_channel(id:int):
                del_target = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",user_id).execute() # delete channel from target also 
         except Exception as e:
                 
-                retuen{"error":str(e)}
+                return {"error":str(e)}
 
 # Run client + background task with FastAPI
 
