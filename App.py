@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from telethon.sessions import StringSession
 from supabase import create_client,Client
 from pydantic import BaseModel
+from typing import Union
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
@@ -93,8 +94,8 @@ async def main():
         await asyncio.gather(*tasks)
 
 class channels(BaseModel):    
-    source:int
-    target:int
+    source: Union[int,str]
+    target: Union[int,str]
         
 @app.put("/add_channel")
 async def add_channel(add:channels):
