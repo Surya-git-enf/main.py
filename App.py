@@ -37,7 +37,6 @@ async def forward_messages(session_string):
 
     client = TelegramClient(StringSession(session_string), api_id, api_hash)
     await client.start()
-    
     source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
     target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
     sou = source.data[0]["source_channels"] or [] # data in source channels
@@ -53,12 +52,13 @@ async def forward_messages(session_string):
                        
                     try:
                             
-                            
                             new_messages = await client.get_messages(src, limit=2)
                             if not new_messages:
-                                continue
+                                    
+                                    continue
                             new_msg = new_messages[0]  # latest source message
                     except Exception as e:
+                            
                             print(f"Error fetching from {src}: {e}")
                             continue
 
