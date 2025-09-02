@@ -126,14 +126,15 @@ class edit_ch(BaseModel):
         user_id:str
         source_value:Union[int,str]
         target_value:Union[int,str]
+        index:int
 @app.put("/edit_channel")
-async def edit_channel(edit:edit_ch,index:int):                                            
+async def edit_channel(edit:edit_ch):                                            
         source_response = supabase.table("telegram_sessions").select("source_channels").eq("user_id",edit.user_id).execute()
         target_resource = supabase.table("telegram_sessions").select("target_channels").eq("user_id",edit.user_id).execute()
         sources = source_response.data[0]["source_channels"] or []
         targets = target_resource.data[0]["target_channels"] or []
-        sources[index] = edit.source_value
-        targets[index] = edit.target_value
+        sources[edit.index] = edit.source_value
+        targets[edit.index] = edit.target_value
         try:
             edit_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",edit.user_id).execute() #when source edit value is stored in edit_resulr
             edit_results = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",edit.user_id).execute() #this is for target edits
