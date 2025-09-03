@@ -87,11 +87,11 @@ async def forward_messages(session_string):
                                                         
                                                         print(f"⚠️ Message already exists in {tgt}!")
     
-                                         else:
-                                                 
-                                                  # target empty, safe to forward
-                                                 await client.forward_messages(tgt, new_msg)
-                                                 print(f"✅ Forwarded (target empty) {src} -> {tgt}")
+                                        else:
+                                                
+                                                 # target empty, safe to forward
+                                                await client.forward_messages(tgt, new_msg)
+                                                print(f"✅ Forwarded (target empty) {src} -> {tgt}")
 
                                  except Exception as e:
                                         print(f"Error forwarding to {tgt}: {e}")
