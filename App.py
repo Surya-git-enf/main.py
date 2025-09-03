@@ -34,10 +34,10 @@ def home():
 
 # Background task to forward messages
 async def forward_messages(session_string):
-        while True:
-                
-                client = TelegramClient(StringSession(session_string), api_id, api_hash)
+        client = TelegramClient(StringSession(session_string), api_id, api_hash)
                 await client.start()
+        #while True:
+                
                 source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
                 target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
                 sou = source.data[0]["source_channels"] or [] # data in source channels
