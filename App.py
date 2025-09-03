@@ -35,63 +35,66 @@ def home():
 # Background task to forward messages
 async def forward_messages(session_string):
         client = TelegramClient(StringSession(session_string), api_id, api_hash)
-                await client.start()
+        await client.start()
         #while True:
                 
-                source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-                target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-                sou = source.data[0]["source_channels"] or [] # data in source channels
-                tar = target.data[0]["target_channels"] or []  # data in target channels    
-                for s, t in zip(sou, tar):
+        source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+        target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+        sou = source.data[0]["source_channels"] or [] # data in source channels
+        tar = target.data[0]["target_channels"] or []  # data in target channels    
+        for s, t in zip(sou, tar):
+                
+                source_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in s.split(",") if ch.strip()]
+                target_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in t.split(",") if ch.strip()]
+                for src in source_channels:
                         
-                        source_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in s.split(",") if ch.strip()]
-                        target_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in t.split(",") if ch.strip()]
-                        for src in source_channels:
-                                if not src.strip():
-                                        continue
+                        if not src.strip():
+                                
+                                continue
                        
-                                try:
-                                        new_messages = await client.get_messages(src, limit=2)
-                                        if not new_messages:
-                                                continue
-                                        new_msg = new_messages[0]  # latest source message
-                                except Exception as e:
+                        try:
+                                
+                                new_messages = await client.get_messages(src, limit=2)
+                                if not new_messages:
+                                        continue
+                                new_msg = new_messages[0]  # latest source message
+                        except Exception as e:
                                         
                             
-                                        print(f"Error fetching from {src}: {e}")
+                                 print(f"Error fetching from {src}: {e}")
+                                 continue
+
+                        for tgt in target_channels:
+                                        
+                                if not tgt.strip():
+                        
+                                        
                                         continue
 
-                                for tgt in target_channels:
+                                try:
                                         
-                                        if not tgt.strip():
                                                 
-                                                continue
-
-                                        try:
-                                                
-                                                existed_messages = await client.get_messages(tgt, limit=50)
-                                                if existed_messages:
+                                        existed_messages = await client.get_messages(tgt, limit=50)
+                                        if existed_messages:
                                     # Check if new_msg.text exists in any of the last 10 target messages
-                                                    exists = any(m.message == new_msg.message for m in existed_messages)
+                                                exists = any(m.message == new_msg.message for m in existed_messages)
 
-                                                    if not exists:
+                                                if not exists:
                                                         
-                                                        await client.forward_messages(tgt, new_msg)
-                                                        print(f"✅ Forwarded from {src} -> {tgt}")
-                                                    else:
-                                                            
-                                                        
-                                                        
-                                                            print(f"⚠️ Message already exists in {tgt}!")
-    
+                                                         await client.forward_messages(tgt, new_msg)
+                                                         print(f"✅ Forwarded from {src} -> {tgt}")
                                                 else:
-                                                        # target empty, safe to forward
-                                                        await client.forward_messages(tgt, new_msg)
-                                                        print(f"✅ Forwarded (target empty) {src} -> {tgt}")
+                                                        
+                                                        print(f"⚠️ Message already exists in {tgt}!")
+    
+                                         else:
+                                                 
+                                                  # target empty, safe to forward
+                                                 await client.forward_messages(tgt, new_msg)
+                                                 print(f"✅ Forwarded (target empty) {src} -> {tgt}")
 
-                                        except Exception as e:
-                                                
-                                                print(f"Error forwarding to {tgt}: {e}")
+                                 except Exception as e:
+                                        print(f"Error forwarding to {tgt}: {e}")
         
                 await asyncio.sleep(60)  # check every 5 mins
         
