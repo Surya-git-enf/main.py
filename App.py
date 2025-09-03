@@ -94,8 +94,7 @@ async def forward_messages(session_string):
                                         except Exception as e:
                                                 
                                                 print(f"Error forwarding to {tgt}: {e}")
-        
-                   await asyncio.sleep(60)  # check every 5 mins
+                await asyncio.sleep(60)  # check every 5 mins
         
         
 async def main():
