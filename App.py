@@ -93,7 +93,8 @@ async def forward_messages(session_string):
                                                 await client.forward_messages(tgt, new_msg)
                                                 print(f"✅ Forwarded (target empty) {src} -> {tgt}")
 
-                                 except Exception as e:
+                                except Exception as e:
+                                        
                                         print(f"Error forwarding to {tgt}: {e}")
         
                 await asyncio.sleep(60)  # check every 5 mins
