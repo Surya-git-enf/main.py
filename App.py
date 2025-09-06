@@ -35,7 +35,7 @@ def home():
 class forward(BaseModel):
         session : str
         sou : List[str]
-        tar : List[tar]
+        tar : List[str]
 # Background task to forward messages
 @app.post("/forward")
 async def forward_messages(input:forward):
