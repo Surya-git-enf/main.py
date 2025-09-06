@@ -177,9 +177,10 @@ async def delete_channel(id:int,user_id:str):
 
 # Run client + background task with FastAPI
 
-@app.on_event("startup")
-async def startup_event():
+#@app.on_event("startup")
+#async def startup_event():
+        
     #await client.start()
-    asyncio.create_task(main())
+    #asyncio.create_task(main())
 
 
