@@ -6,6 +6,7 @@ from telethon.sessions import StringSession
 from supabase import create_client,Client
 from pydantic import BaseModel
 from typing import Union
+from typing import List
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
