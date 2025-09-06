@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from telethon.sessions import StringSession
 from supabase import create_client,Client
 from pydantic import BaseModel
-from typing import Union
+from typing import Union,List
 #from typing import List
 
 # Load Telegram credentials from environment
@@ -32,18 +32,25 @@ app = FastAPI()
 def home():
     return {"status": "running", "message": "Telegram forwarder active!"}
 
-
+class forward(BaseModel):
+        session : str
+        sou : List[str]
+        tar : List[tar]
 # Background task to forward messages
-
-async def forward_messages(session_string):
+@app.post("/forward")
+async def forward_messages(input:forward):
+        session_string = input.session
+        sou = input.sou
+        tar = input.tar
         client = TelegramClient(StringSession(session_string), api_id, api_hash)
         await client.start()
         #while True:
                 
-        source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
-        target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
-        sou = source.data[0]["source_channels"] or [] # data in source channels
-        tar = target.data[0]["target_channels"] or []  # data in target channels  
+       # source = supabase.table("telegram_sessions").select("source_channels").execute() #source channel in telegram_sessions
+       # target = supabase.table("telegram_sessions").select("target_channels").execute() #target channel in telegram sessions
+        #sou = source.data[0]["source_channels"] or [] # data in source channels
+        #tar = target.data[0]["target_channels"] or []  # data in target channels  
+       
         while True:
                 for s, t in zip(sou, tar):
                         
@@ -98,7 +105,7 @@ async def forward_messages(session_string):
                                                 print(f"Error forwarding to {tgt}: {e}")
                 await asyncio.sleep(60)  # check every 5 mins
         
-
+"""
 async def main():
     while True:
         data = supabase.table("telegram_sessions").select("Session_string").execute()
@@ -106,7 +113,7 @@ async def main():
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
         await asyncio.gather(*tasks)
         await asyncio.sleep(60)
-
+"""
 class channels(BaseModel):
     user_id:str
     source: Union[int,str]
