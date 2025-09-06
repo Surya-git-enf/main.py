@@ -39,7 +39,7 @@ class forward(BaseModel):
         tar : List[str]
 """        
 # Background task to forward messages
-@app.post("/forward")
+#@app.post("/forward")
 async def forward_messages(session_string):
         #session_string = input.session
         #sou = input.sou
