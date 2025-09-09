@@ -192,7 +192,7 @@ def replies(rpl:recent_rpl):
 class draft(BaseModel):
         user_id:str
 
-@app.get("/drafts"):
+@app.get("/drafts")
 def get_drafts(df:drafts):
         user = df.user_id
         drafts = supabase.table("telegram_sessions").select("Drafts").eq("user_id",user).execute()
