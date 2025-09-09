@@ -136,7 +136,7 @@ async def add_channel(add:channels):
     try:
         source_result = supabase.table("telegram_sessions").update({"source_channels":sources}).eq("user_id",add.user_id).execute()
         target_result = supabase.table("telegram_sessions").update({"target_channels":targets}).eq("user_id",add.user_id).execute()
-        return {"message":"updated successfully"}
+        return {"message":"created successfully"}
     except Exception as e:
         return {"error":str(e)}
     
