@@ -189,11 +189,11 @@ def replies(rpl:recent_rpl):
         return {"recent_replies":replies}
 
 
-class drafts(BaseModel):
+class draft(BaseModel):
         user_id:str
 
 @app.get("/drafts"):
-def drafts(df:drafts):
+def get_drafts(df:drafts):
         user = df.user_id
         drafts = supabase.table("telegram_sessions").select("Drafts").eq("user_id",user).execute()
         return{"drafts":drafts}
@@ -204,5 +204,8 @@ async def startup_event():
         
     #await client.start()
     asyncio.create_task(main())
+
+
+
 
 
