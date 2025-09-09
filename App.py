@@ -179,6 +179,25 @@ async def delete_channel(id:int,user_id:str):
                 
                 return {"error":str(e)}
 
+class recent_rpl(BaseModel):
+        user_id:str
+
+@app.get("/recent_replies")
+def replies(rpl:recent_rpl):
+        user = rpl.user_id
+        replies = supabase.table("telegram_sessione").select("recent_replies").eq("user_id",user).execute()
+        return {"recent_replies":replies}
+
+
+class drafts(BaseModel):
+        user_id:str
+
+@app.get("/drafts"):
+def drafts(df:drafts):
+        user = df.user_id
+        drafts = supabase.table("telegram_sessions").select("Drafts").eq("user_id",user).execute()
+        return{"drafts":drafts}
+        
 # Run client + background task with FastAPI
 @app.on_event("startup")
 async def startup_event():
