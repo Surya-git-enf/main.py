@@ -197,7 +197,25 @@ def get_drafts(df:draft):
         user = df.user_id
         drafts = supabase.table("telegram_sessions").select("Drafts").eq("user_id",user).execute()
         return{"drafts":drafts}
+
+
+@app.get("/user")
+def get_user():
+        user_id = supabase.table("telegram_sessions").select("user_id").execute()
+        return{"user_id":user_id}
+
+class toggle(BaseModel):
+        user:str
+        pos:str
+
+@app.put("/state")
+def state(us:toggle):
+        st=supabase.table("telegram_sessions").update({"automation_state":us.pos}).eq("user_id",us.user).execute()
+        return {"message":f"automation is turned {us.pos} successfully"}
         
+        
+
+
 # Run client + background task with FastAPI
 @app.on_event("startup")
 async def startup_event():
