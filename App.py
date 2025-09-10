@@ -198,10 +198,12 @@ def get_drafts(df:draft):
         drafts = supabase.table("telegram_sessions").select("Drafts").eq("user_id",user).execute()
         return{"drafts":drafts}
 
+class user(BaseModel):
+        email:str
 
 @app.get("/user")
-def get_user():
-        user_id = supabase.table("telegram_sessions").select("user_id").execute()
+def get_user(user:user):
+        user_id = supabase.table("telegram_sessions").select("user_id").eq("email",user.email).execute()
         return{"user_id":user_id}
 
 class toggle(BaseModel):
