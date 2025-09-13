@@ -199,7 +199,7 @@ def get_drafts(df:draft):
 class user(BaseModel):
         email:str
 
-@app.get("/user")
+@app.post("/user")
 def get_user(user:user):
         user_id = supabase.table("telegram_sessions").select("user_id").eq("email",user.email).execute()
         return{"user_id":user_id}
