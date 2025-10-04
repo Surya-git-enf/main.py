@@ -7,6 +7,20 @@ from supabase import create_client,Client
 from pydantic import BaseModel
 from typing import Union,List
 #from typing import List
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+
+# Allow all routes from any origin
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+@app.route("/test")
+def test():
+    return {"message": "CORS working ✅"}
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
