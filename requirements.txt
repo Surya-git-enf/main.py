@@ -3,5 +3,3 @@ fastapi
 uvicorn
 supabase
 pydantic
-Flask
-Flask-Cors
