@@ -7,21 +7,22 @@ from supabase import create_client,Client
 from pydantic import BaseModel
 from typing import Union,List
 #from typing import List
-from flask import Flask
-from flask_cors import CORS
+from fastapi.middleware.cors import CORSMiddleware
 
-app = Flask(__name__)
+app = FastAPI()
 
-# Allow all routes from any origin
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # allows all headers
+)
 
-@app.route("/test")
-def test():
+@app.get("/test")
+async def test():
     return {"message": "CORS working ✅"}
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
 api_hash = os.getenv("API_HASH")
