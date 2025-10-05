@@ -115,7 +115,6 @@ async def forward_messages(session_string):
         
 
 async def main():
-    while True:
         data = supabase.table("telegram_sessions").select("Session_string").execute()
         sessions = data.data or []
         tasks = [forward_messages(user["Session_string"]) for user in sessions]
