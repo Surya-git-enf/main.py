@@ -13,20 +13,6 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 # Add these origins
-origins = [
-    "https://09fa41e4-efb3-4d13-84ba-24c384707555.lovableproject.com",
-    "https://id-preview--09fa41e4-efb3-4d13-84ba-24c384707555.lovable.app",
-    "http://localhost:5173",  # for local development
-    "http://localhost:8080",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # or ["*"] to allow all (less secure)
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Load Telegram credentials from environment
 api_id = int(os.getenv("API_ID"))        # must be int
