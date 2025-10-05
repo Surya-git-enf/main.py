@@ -59,8 +59,8 @@ async def forward_messages(session_string):
         sou = source.data[0]["source_channels"] or [] # data in source channels
         tar = target.data[0]["target_channels"] or []  # data in target channels  
        
-        #while True:
-        for s, t in zip(sou, tar):
+        while True:
+            for s, t in zip(sou, tar):
                 source_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in s.split(",") if ch.strip()]
                 target_channels = [int(ch) if ch.strip("-").isdigit()  else ch.strip() for ch in t.split(",") if ch.strip()]
                 for src in source_channels:
