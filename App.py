@@ -385,10 +385,3 @@ async def startup_event():
     # Launch manager which in turn launches per-session forwarders
     logger.info("Starting main manager...")
     asyncio.create_task(main_manager())
-
-# -------------------------
-# For local run (uvicorn recommended)
-# -------------------------
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("App:app", host="0.0.0.0", port=int(os.getenv("PORT", 8000)), reload=False)
