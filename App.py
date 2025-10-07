@@ -11,6 +11,18 @@ from typing import Union,List
 
 from fastapi.middleware.cors import CORSMiddleware
 
+
+app = FastAPI()
+
+# ✅ Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # allow all origins for testing (safe for now)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app = FastAPI()
 
 # Add these origins
